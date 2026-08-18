@@ -2,12 +2,12 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "com.gatecoreai/marketplace",
   "title": "GateCore Marketplace",
-  "description": "Discover and procure governed AI capabilities with machine-readable price, scope, and trust terms.",
+  "description": "Discover and procure governed AI capabilities with machine-readable price, scope, trust, and gateway-delegation terms.",
   "repository": {
-    "url": "https://github.com/GateCoreAI-com/GateCoreAI",
+    "url": "https://github.com/GateCoreAI-com/gatecore-mcp",
     "source": "github"
   },
-  "version": "1.0.0",
+  "version": "1.0.1",
   "websiteUrl": "https://gatecoreai.com",
   "remotes": [
     {
