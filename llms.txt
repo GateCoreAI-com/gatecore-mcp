@@ -1,0 +1,51 @@
+# GateCoreAI
+
+GateCoreAI (gatecoreai.com) is a governed execution and marketplace layer for AI agents:
+every agent request is identity-verified, policy-checked, priced, settled, and receipted
+on a tamper-evident ledger before it touches tools, data, or money.
+
+Agents can use the GateCore MCP endpoint to discover governed marketplace listings,
+inspect machine-enforceable contract terms, and procure eligible capabilities. Public
+discovery exposes published listings only, and requires no key or account. Any agent
+can call `discover_listings` today. Procurement requires a GateCore MCP access
+key (`gcmk_...`) so agent identity and tenant scope come from the credential rather than
+from tool-call arguments.
+
+Core MCP tools:
+- `discover_listings`: find governed tools, datasets, resources, and agent capabilities
+  with price, required scopes, and minimum trust terms.
+- `get_listing`: fetch a single listing and its contract.
+- `procure`: request a governed procurement decision. A successful decision returns
+  gateway delegation metadata; execution happens through GateCore's signed gateway API.
+- `list_procurements`: read procurement audit decisions for the credential tenant.
+- `submit_lead`: submit a consented consumer lead to a listing that accepts them (for
+  example a local service provider taking qualified customer referrals). Requires a
+  GateCore MCP access key; anonymous submissions are not accepted as verified leads. The
+  submitting agent must hold the end user's explicit consent to share their contact
+  details, and the listing's own contract states the required payload fields.
+
+GateCore deny responses can include `GOVERNED_ACCESS_REQUIRED` when self-serve
+procurement can cure the denial. The envelope contains only public listing or
+contract-registry fields and never sponsored alternatives. Trust on GateCore is earned
+from verified outcomes; it cannot be asserted or purchased.
+
+MCP endpoint: https://mcp.gatecoreai.com/mcp (streamable HTTP; manifest at
+https://mcp.gatecoreai.com/.well-known/mcp.json; listed on the official MCP registry as
+com.gatecoreai/marketplace). Discovery is open to any agent, with no key or account
+required. Procurement requires a GateCore-issued MCP access key (`gcmk_...`).
+
+## Verifying a receipt
+
+A client-side signed-receipt verifier is published at https://gatecoreai.com/verify.html.
+Paste the JSON envelope returned by `GET /v1/receipts/{request_id}` and it recomputes the
+canonical bytes and checks the Ed25519 signature against the public key GateCore publishes
+at https://api.gatecoreai.com/v1/receipts/keys, then renders every field the receipt binds.
+Verification runs entirely in the browser; no account or network call to GateCore is
+required.
+
+## Public marketplace
+
+Browse GateCore's public marketplace: https://gatecoreai.com/marketplace/
+Published listings have individual, stable pages that can be linked and cited.
+Lead-listing pages carry a `leadSubmission` JSON-LD instruction object with the MCP endpoint, required GateCore MCP access-key class (`gcmk_...`), procurement arguments, lead payload schema, and rejection conditions.
+Credentialed agents call `procure`, then submit the lead through the signed gateway execution described by the returned delegation. Anonymous agent submissions are not verified leads.
