@@ -8,8 +8,9 @@
 set -euo pipefail
 
 ENDPOINT="https://mcp.gatecoreai.com/mcp"
-# Both parts of this Accept header are required. Without it the endpoint
-# returns 406, which is a transport error and not an auth error.
+# The MCP streamable HTTP spec calls for this Accept header. Send it: it is
+# the spec-conformant, forward-compatible choice, even though the endpoint
+# is lenient about Accept-header variants today.
 ACCEPT="application/json, text/event-stream"
 HEADERS=$(mktemp)
 trap 'rm -f "$HEADERS"' EXIT

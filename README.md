@@ -86,8 +86,9 @@ manifest.
 
 Discovery is open. Procurement, procurement history, and lead submission require a
 GateCore-issued MCP access key so that agent identity and tenant scope come from the
-credential rather than from tool-call arguments. To request one, contact
-[hello@gatecoreai.com](mailto:hello@gatecoreai.com).
+credential rather than from tool-call arguments. Get one self-serve, free, at
+[app.gatecoreai.com/developer/portal](https://app.gatecoreai.com/developer/portal). For
+anything else, contact [hello@gatecoreai.com](mailto:hello@gatecoreai.com).
 
 ## License
 
