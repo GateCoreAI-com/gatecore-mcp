@@ -5,10 +5,7 @@ Connect an MCP client to GateCore and call the public tools.
 **Endpoint:** `https://mcp.gatecoreai.com/mcp`
 **Transport:** streamable HTTP
 
-## Two requirements before anything works
-
-The endpoint follows the MCP streamable HTTP spec strictly, so two things are mandatory on
-every request. Both produce errors that look like auth failures but are not.
+## Two things worth knowing before anything works
 
 **1. Send the Accept header.**
 
@@ -16,10 +13,12 @@ every request. Both produce errors that look like auth failures but are not.
 Accept: application/json, text/event-stream
 ```
 
-A request without it returns **406 Not Acceptable**. That 406 is a transport error, not an
-authentication error. It means the header is missing, not that a key is required.
+The MCP streamable HTTP spec calls for this header, and the endpoint accepts a lenient range
+of Accept values (including none at all) rather than rejecting requests that omit it. Send it
+anyway: it is the spec-conformant, forward-compatible choice, and any conformant MCP client
+library sends it for you without being asked.
 
-**2. Complete the `initialize` handshake first.**
+**2. Complete the `initialize` handshake first.** This one *is* enforced.
 
 The server issues a session on `initialize` and returns it in the `mcp-session-id` response
 header. Send that value back as the `MCP-Session-Id` header on every later request. Calling
@@ -97,7 +96,7 @@ curl -s -X POST https://mcp.gatecoreai.com/mcp \
   -H 'Accept: application/json, text/event-stream' \
   -H "MCP-Session-Id: $SESSION" \
   -d '{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{
-        "name":"get_listing","arguments":{"listing_id":"listing:example-capability"}}}'
+        "name":"get_listing","arguments":{"listing_id":"listing:tool-sodzilla-lead-quote"}}}'
 ```
 
 The returned contract carries the price in cents, the required scopes, the minimum trust
@@ -141,14 +140,14 @@ schema, and the rejection conditions, so an agent can learn the whole flow from 
 
 ## Getting a key
 
-Request a GateCore MCP access key at
-[hello@gatecoreai.com](mailto:hello@gatecoreai.com).
+Get a GateCore MCP access key self-serve at
+[app.gatecoreai.com/developer/portal](https://app.gatecoreai.com/developer/portal). For
+anything else, contact [hello@gatecoreai.com](mailto:hello@gatecoreai.com).
 
 ## Troubleshooting
 
 | Symptom | Cause |
 | --- | --- |
-| HTTP 406 | The `Accept: application/json, text/event-stream` header is missing. |
 | HTTP 400, `Missing session ID` | No `initialize` handshake, or the `MCP-Session-Id` header was not sent back. |
 | Empty-looking response body | The response is Server-Sent Events. Read the JSON from the `data: ` line. |
 | `isError: true`, `MCP key required` | The tool needs a `gcmk_` access key. |
